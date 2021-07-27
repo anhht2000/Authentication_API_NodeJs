@@ -1,0 +1,63 @@
+<link rel="stylesheet" type="text/css" href="css/app.css">
+
+<!-- body  -->
+<div class="wrapper">
+    <div class="infor">
+        <!-- <label for="txtName">Name</label> -->
+        <input type="text" id="txtName" placeholder="Enter Your Name">
+        <!-- <label for="txtEmail">Email</label> -->
+        <input type="text" id="txtEmail" placeholder="Enter Your Email">
+        <!-- <label for="txtPhone">Phone</label> -->
+        <input type="text" id="txtPhone" placeholder="Enter Your Phone">
+        <input type="button" id="btnSubmit" value="Send">
+    </div>
+    <div class="listUser">
+        <h3 id="title">List Users</h3>
+        <div class="Users">
+            <table class="table Users_table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- handle -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    let socket = io("https://random-socket.herokuapp.com")
+    //client nhan all info
+    socket.on(("server_send_all_info"),function(data){
+        let tableContent = document.querySelector(".Users_table tbody");
+        let content = ``;
+        data.forEach(function(item,index){
+            content += `<tr>
+                            <th scope="row">${index}</th>
+                            <td>${item.name}</td>
+                            <td>${item.email}</td>
+                            <td>${item.phone}</td>
+                        </tr>`;
+            
+        })
+        tableContent.innerHTML = content;
+    })
+
+    $(document).ready(function(){
+        $("#btnSubmit").click(function(){
+            socket.emit("client_send_info",{
+                name:$("#txtName").val(),
+                email:$("#txtEmail").val(),
+                phone:$("#txtPhone").val()
+            });
+        })
+    })
+</script>
